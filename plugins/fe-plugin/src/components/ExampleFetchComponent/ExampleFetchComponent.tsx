@@ -5,7 +5,6 @@ import {
   TableColumn,
   Progress,
   ResponseErrorPanel,
-  Select,
 } from '@backstage/core-components';
 import useAsync from 'react-use/lib/useAsync';
 import {
@@ -14,8 +13,11 @@ import {
   Dialog,
   DialogTitle,
   DialogContent,
-  DialogActions,
+  DialogActions,  
 } from '@material-ui/core';
+import { MantineProvider, Select } from '@mantine/core';
+import { DateTimePicker } from '@mantine/dates';
+// import { useEntity } from '@backstage/plugin-catalog-react';
 
 export const exampleUsers = {
   results: [
@@ -81,6 +83,8 @@ export const DenseTable = ({ users }: DenseTableProps) => {
   const [open, setOpen] = useState(false);
   const [openEdit, setOpenEdit] = useState(false);
   const [editUser, setEditUser] = useState<User | null>(null);
+  const [value, setValue] = useState<Date | null>(null);
+  const [searchValue, setSearchValue] = useState('');
   const [newUser, setNewUser] = useState<User>({
     gender: '',
     name: { title: '', first: '', last: '' },
@@ -148,7 +152,6 @@ export const DenseTable = ({ users }: DenseTableProps) => {
   const handleClose = () => setOpen(false);
   const handleSave = () => {
     if (!editUser) {
-    
       return;
     }
     console.log(editUser);
@@ -190,6 +193,11 @@ export const DenseTable = ({ users }: DenseTableProps) => {
         <Button variant="contained" color="primary" onClick={handleOpen}>
           +
         </Button>
+        <DateTimePicker
+          // label="Pick date and time"
+          color="dark"
+          placeholder="Pick date and time"
+        />
       </div>
 
       <Table
@@ -234,11 +242,20 @@ export const DenseTable = ({ users }: DenseTableProps) => {
             onChange={e => setNewUser({ ...newUser, email: e.target.value })}
           />
           <Select
+            searchable
             label="Nationality"
-            items={nationalities.map(nat => ({ label: nat, value: nat }))}
-            selected={newUser.nat}
+            searchValue={searchValue}
+            data={nationalities.map(nat => ({ label: nat, value: nat }))}
+            onSearchChange={setSearchValue} // This updates the search input
             onChange={value => setNewUser({ ...newUser, nat: value })}
           />
+          {/* <Select
+           searchable
+            label="Nationality"
+            data={nationalities.map(nat => ({ label: nat, value: nat }))}
+            selected={newUser.nat}
+            onChange={value => setNewUser({ ...newUser, nat: value })}
+          /> */}
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose} color="secondary">
@@ -295,6 +312,7 @@ export const DenseTable = ({ users }: DenseTableProps) => {
           <Button onClick={handleEditClose} color="secondary">
             Cancel
           </Button>
+
           <Button onClick={handleSave}>Save</Button>
         </DialogActions>
       </Dialog>
@@ -303,6 +321,7 @@ export const DenseTable = ({ users }: DenseTableProps) => {
 };
 
 export const ExampleFetchComponent = () => {
+  // const { entity } = useEntity();
   const { value, loading, error } = useAsync(async (): Promise<User[]> => {
     return exampleUsers.results;
   }, []);
@@ -313,5 +332,9 @@ export const ExampleFetchComponent = () => {
     return <ResponseErrorPanel error={error} />;
   }
 
-  return <DenseTable users={value || []} />;
+  return (
+    <MantineProvider withNormalizeCSS>
+      <DenseTable users={value || []} />
+    </MantineProvider>
+  );
 };

@@ -188,6 +188,9 @@ const serviceEntityPage = (
     <EntityLayout.Route path="/docs" title="Docs">
       {techdocsContent}
     </EntityLayout.Route>
+    {/* <EntityLayout.Route path="/your-custom-route" title="CustomTitle">
+      <MyPluginEntityContent />
+    </EntityLayout.Route> */}
   </EntityLayout>
 );
 

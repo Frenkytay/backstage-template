@@ -59,6 +59,8 @@ backend.add(import('@backstage/plugin-search-backend-module-techdocs'));
 // kubernetes
 backend.add(import('@backstage/plugin-kubernetes-backend'));
 
+//
+// backend.add(import('@mantine/dates'));
 // auth
 
 // backend.add(import('@backstage/plugin-auth-backend'));
